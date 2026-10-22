@@ -1474,7 +1474,11 @@ p {
   display: grid;
   place-items: center;
   background: var(--bg-elevated);
-  border: 1px solid var(--surface-line);
+  border: 2px solid color-mix(in srgb, var(--accent) 55%, var(--surface-line));
+  box-shadow:
+    0 0 0 5px var(--accent-soft),
+    0 12px 28px color-mix(in srgb, var(--accent) 18%, transparent);
+  overflow: hidden;
   margin: 0 auto;
 }
 
@@ -1490,6 +1494,7 @@ p {
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: inherit;
 }
 
 .about__text {
