@@ -1,5 +1,6 @@
 export const links = {
   github: "https://github.com/AraujoDavies",
+  portfolioRepo: "https://github.com/AraujoDavies",
   linkedin: "https://br.linkedin.com/in/davies-araujo-b62041261",
   email: "mailto:daviesaraujo@hotmail.com",
   // Projetos — troque pelos links reais quando tiver

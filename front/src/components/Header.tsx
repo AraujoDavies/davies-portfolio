@@ -74,25 +74,21 @@ export function Header() {
           >
             {`<${hero.name} />`}
           </a>
-          <div className="site-header__leading">
-            <button
-              type="button"
-              className="site-header__menu-btn"
-              aria-expanded={menuOpen}
-              aria-controls={navId}
-              aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <MenuIcon open={menuOpen} />
-            </button>
-            <div className="site-header__search">
-              <SiteSearch />
-            </div>
+          <button
+            type="button"
+            className="site-header__menu-btn"
+            aria-expanded={menuOpen}
+            aria-controls={navId}
+            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <MenuIcon open={menuOpen} />
+          </button>
+          <div className="site-header__search">
+            <SiteSearch />
           </div>
-          <div className="site-header__actions">
-            <ThemeSwitcher />
-            <GitHubButton />
-          </div>
+          <ThemeSwitcher />
+          <GitHubButton />
         </div>
         <div className="site-header__row">
           <nav id={navId} className="site-header__nav" aria-label="Principal">

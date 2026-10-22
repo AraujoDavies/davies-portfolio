@@ -8,14 +8,6 @@ export function Hero() {
   return (
     <section className="hero" id="topo" aria-labelledby="hero-name">
       <div className="hero__grid">
-        <div className="hero__copy">
-          <p className="hero__eyebrow">Portfólio</p>
-          <h1 id="hero-name" className="hero__name">
-            {hero.name}
-          </h1>
-          <p className="hero__title">{hero.title}</p>
-          <p className="hero__pitch">{hero.pitch}</p>
-        </div>
         <div className="hero__media" aria-hidden={showPhoto ? undefined : true}>
           <div
             className={`hero__avatar${showPhoto ? " hero__avatar--photo" : ""}`}
@@ -30,6 +22,14 @@ export function Hero() {
               <span>{hero.initials}</span>
             )}
           </div>
+        </div>
+        <div className="hero__copy">
+          <p className="hero__eyebrow">Portfólio</p>
+          <h1 id="hero-name" className="hero__name">
+            {hero.name}
+          </h1>
+          <p className="hero__title">{hero.title}</p>
+          <p className="hero__pitch">{hero.pitch}</p>
         </div>
       </div>
       <div className="hero__atmosphere" aria-hidden="true" />

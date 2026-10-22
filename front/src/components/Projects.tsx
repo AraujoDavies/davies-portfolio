@@ -94,21 +94,30 @@ function ProjectCase({ project }: { project: Project }) {
         <div>
           <div className="project__title-row">
             <div className="project__title-main">
-              <h3 className="project__name">{project.name}</h3>
               {project.repoUrl ? (
                 <a
-                  className="project__external"
+                  className="project__title-link"
                   href={project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Abrir ${project.name} em uma nova aba`}
                 >
-                  <ExternalLinkIcon />
+                  <h3 className="project__name">{project.name}</h3>
+                  <span className="project__external" aria-hidden="true">
+                    <ExternalLinkIcon />
+                  </span>
+                  {project.badge ? (
+                    <span className="project__badge">{project.badge}</span>
+                  ) : null}
                 </a>
-              ) : null}
-              {project.badge ? (
-                <span className="project__badge">{project.badge}</span>
-              ) : null}
+              ) : (
+                <>
+                  <h3 className="project__name">{project.name}</h3>
+                  {project.badge ? (
+                    <span className="project__badge">{project.badge}</span>
+                  ) : null}
+                </>
+              )}
             </div>
           </div>
           <p className="project__tagline">{project.tagline}</p>

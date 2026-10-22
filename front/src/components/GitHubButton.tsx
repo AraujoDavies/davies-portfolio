@@ -51,7 +51,7 @@ function ForkIcon() {
 }
 
 export function GitHubButton() {
-  const target = githubTarget(links.github);
+  const target = githubTarget(links.portfolioRepo);
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export function GitHubButton() {
   return (
     <a
       className="github-source"
-      href={links.github}
+      href={links.portfolioRepo}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
