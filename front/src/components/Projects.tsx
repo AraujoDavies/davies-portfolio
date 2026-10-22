@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { projects, type Project } from "../content";
+import { useNavigation } from "../navigation";
+
+/** Matches `.project { scroll-margin-top: 7.5rem }` / sticky side nav. */
+const SCROLL_OFFSET_PX = 7.5 * 16;
 
 function ExternalLinkIcon() {
   return (
@@ -176,36 +180,111 @@ function ProjectCase({ project }: { project: Project }) {
   );
 }
 
+function getProjectNodes() {
+  return projects
+    .map((project) => {
+      const el = document.getElementById(project.id);
+      return el ? { id: project.id, el } : null;
+    })
+    .filter((node): node is { id: string; el: HTMLElement } => Boolean(node));
+}
+
+function resolveActiveProjectId(): string {
+  const nodes = getProjectNodes();
+  if (nodes.length === 0) return projects[0]?.id ?? "";
+
+  const last = nodes[nodes.length - 1];
+  const maxScroll = Math.max(
+    0,
+    document.documentElement.scrollHeight - window.innerHeight,
+  );
+
+  // Absolute bottom of the page (footer / page-nav still below the cards).
+  if (window.scrollY >= maxScroll - 64) {
+    return last.id;
+  }
+
+  // Document Y of the sticky-header reading line.
+  const line = window.scrollY + SCROLL_OFFSET_PX + 1;
+  let current = nodes[0].id;
+
+  for (const { id, el } of nodes) {
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    if (top <= line) current = id;
+  }
+
+  // Short final card often cannot reach the offset line while still on-screen.
+  const prev = nodes[nodes.length - 2];
+  if (prev) {
+    const prevBottom = prev.el.getBoundingClientRect().bottom;
+    const lastTop = last.el.getBoundingClientRect().top;
+    if (prevBottom <= SCROLL_OFFSET_PX + 96 && lastTop < window.innerHeight * 0.75) {
+      return last.id;
+    }
+  }
+
+  return current;
+}
+
 export function Projects() {
   const [activeId, setActiveId] = useState(projects[0]?.id ?? "");
+  const { goToHash } = useNavigation();
+  const pinnedIdRef = useRef<string | null>(null);
+  const pinTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const nodes = projects
-      .map((project) => document.getElementById(project.id))
-      .filter((node): node is HTMLElement => Boolean(node));
+    let raf = 0;
 
-    if (nodes.length === 0) return;
+    const updateActive = () => {
+      if (pinnedIdRef.current) {
+        setActiveId(pinnedIdRef.current);
+        return;
+      }
+      setActiveId(resolveActiveProjectId());
+    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+    const onScrollOrResize = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(updateActive);
+    };
 
-        const top = visible[0]?.target;
-        if (top instanceof HTMLElement && top.id) {
-          setActiveId(top.id);
-        }
-      },
-      {
-        rootMargin: "-20% 0px -55% 0px",
-        threshold: [0.15, 0.35, 0.55],
-      },
-    );
-
-    for (const node of nodes) observer.observe(node);
-    return () => observer.disconnect();
+    updateActive();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      if (pinTimerRef.current !== null) window.clearTimeout(pinTimerRef.current);
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
   }, []);
+
+  const activateProject = (id: string) => {
+    pinnedIdRef.current = id;
+    setActiveId(id);
+
+    if (pinTimerRef.current !== null) window.clearTimeout(pinTimerRef.current);
+
+    const releasePin = () => {
+      pinnedIdRef.current = null;
+      pinTimerRef.current = null;
+      setActiveId(resolveActiveProjectId());
+    };
+
+    const onScrollEnd = () => {
+      window.removeEventListener("scrollend", onScrollEnd);
+      releasePin();
+    };
+
+    window.addEventListener("scrollend", onScrollEnd);
+    // Fallback when scrollend is missing or scroll distance is ~0.
+    pinTimerRef.current = window.setTimeout(() => {
+      window.removeEventListener("scrollend", onScrollEnd);
+      releasePin();
+    }, 900);
+
+    goToHash(id);
+  };
 
   return (
     <section className="section" id="projetos">
@@ -230,6 +309,10 @@ export function Projects() {
                       href={`#${project.id}`}
                       className={`projects-side__link${active ? " is-active" : ""}`}
                       aria-current={active ? "true" : undefined}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        activateProject(project.id);
+                      }}
                     >
                       <span className="projects-side__index" aria-hidden="true">
                         {String(index + 1).padStart(2, "0")}

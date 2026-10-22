@@ -67,6 +67,9 @@ export function scrollToHash(rawHash: string) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    const margin = Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+    const top = target.getBoundingClientRect().top + window.scrollY - margin;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
   });
 }

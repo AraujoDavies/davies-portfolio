@@ -14,6 +14,8 @@ import {
   type PortfolioPage,
 } from "./pages";
 
+const STORAGE_KEY = "portfolio-nav";
+
 type NavigationContextValue = {
   pageIndex: number;
   page: PortfolioPage;
@@ -24,13 +26,55 @@ type NavigationContextValue = {
 
 const NavigationContext = createContext<NavigationContextValue | null>(null);
 
-function readInitialIndex() {
-  if (typeof window === "undefined") return 0;
-  return pageIndexForHash(window.location.hash);
+function normalizeHash(rawHash: string): string {
+  return rawHash.replace(/^#/, "").trim();
 }
 
+function clearUrlHash() {
+  if (!window.location.hash) return;
+  const cleanUrl = `${window.location.pathname}${window.location.search}`;
+  history.replaceState(null, "", cleanUrl);
+}
+
+function persistNavHash(hash: string) {
+  const normalized = normalizeHash(hash);
+  if (!normalized || normalized === "topo") {
+    sessionStorage.removeItem(STORAGE_KEY);
+    return;
+  }
+  sessionStorage.setItem(STORAGE_KEY, normalized);
+}
+
+function readInitialNav(): { pageIndex: number; focusHash: string } {
+  if (typeof window === "undefined") {
+    return { pageIndex: 0, focusHash: "" };
+  }
+
+  const urlHash = normalizeHash(window.location.hash);
+  if (urlHash) {
+    clearUrlHash();
+    persistNavHash(urlHash);
+    return {
+      pageIndex: pageIndexForHash(urlHash),
+      focusHash: urlHash,
+    };
+  }
+
+  const stored = sessionStorage.getItem(STORAGE_KEY) ?? "";
+  if (stored) {
+    return {
+      pageIndex: pageIndexForHash(stored),
+      focusHash: stored,
+    };
+  }
+
+  return { pageIndex: 0, focusHash: "" };
+}
+
+const initialNav = readInitialNav();
+
 export function NavigationProvider({ children }: { children: ReactNode }) {
-  const [pageIndex, setPageIndex] = useState(readInitialIndex);
+  const [pageIndex, setPageIndex] = useState(initialNav.pageIndex);
 
   const goToPage = useCallback(
     (index: number, options?: { hash?: string }) => {
@@ -41,10 +85,15 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
       setPageIndex(next);
 
       const hash = options?.hash ?? page.hash;
-      const href = `#${hash}`;
-      if (window.location.hash !== href) {
-        history.pushState(null, "", href);
+      const cleanHome = next === 0 && (!hash || hash === "topo");
+
+      if (cleanHome) {
+        persistNavHash("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
       }
+
+      persistNavHash(hash);
 
       if (options?.hash && options.hash !== page.hash) {
         scrollToHash(options.hash);
@@ -57,7 +106,7 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
 
   const goToHash = useCallback(
     (rawHash: string) => {
-      const hash = rawHash.replace(/^#/, "").trim();
+      const hash = normalizeHash(rawHash);
       const index = pageIndexForHash(hash);
       goToPage(index, { hash: hash || portfolioPages[index]?.hash });
     },
@@ -65,32 +114,13 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    const onPopState = () => {
-      const index = pageIndexForHash(window.location.hash);
-      setPageIndex(index);
-      const hash = window.location.hash.replace(/^#/, "");
-      if (hash && hash !== portfolioPages[index]?.hash) {
-        scrollToHash(hash);
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    };
+    const { focusHash } = initialNav;
+    if (!focusHash) return;
 
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, []);
+    const page = portfolioPages[pageIndexForHash(focusHash)];
+    if (!page || focusHash === page.hash) return;
 
-  useEffect(() => {
-    const hash = window.location.hash.replace(/^#/, "");
-    if (!hash) {
-      history.replaceState(null, "", `#${portfolioPages[0].hash}`);
-      return;
-    }
-
-    const page = portfolioPages[pageIndexForHash(hash)];
-    if (!page || hash === page.hash) return;
-
-    const timer = window.setTimeout(() => scrollToHash(hash), 50);
+    const timer = window.setTimeout(() => scrollToHash(focusHash), 50);
     return () => window.clearTimeout(timer);
   }, []);
 

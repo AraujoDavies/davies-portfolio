@@ -64,11 +64,11 @@ export function Header() {
       <div className="site-header__inner">
         <div className="site-header__bar">
           <a
-            href="#topo"
+            href="/"
             className="site-header__brand"
             onClick={(event) => {
               event.preventDefault();
-              goToHash("topo");
+              goToHash("");
               setMenuOpen(false);
             }}
           >
@@ -97,7 +97,10 @@ export function Header() {
         <div className="site-header__row">
           <nav id={navId} className="site-header__nav" aria-label="Principal">
             {nav.map((item) => {
-              const active = `#${page.hash}` === item.href || page.hash === item.href.slice(1);
+              const active =
+                item.href === "#"
+                  ? page.id === "inicio"
+                  : `#${page.hash}` === item.href || page.hash === item.href.slice(1);
               return (
                 <a
                   key={item.href}

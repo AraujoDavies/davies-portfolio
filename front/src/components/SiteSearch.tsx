@@ -35,17 +35,19 @@ const entries: SearchEntry[] = [
     title: hero.name,
     section: "Início",
     text: `${hero.title} ${hero.pitch}`,
-    href: "#topo",
+    href: "#",
     suggest: true,
   },
-  ...nav.map((item) => ({
-    id: item.href.slice(1),
-    title: item.label,
-    section: "Seção",
-    text: item.label,
-    href: item.href,
-    suggest: true,
-  })),
+  ...nav
+    .filter((item) => item.href !== "#")
+    .map((item) => ({
+      id: item.href.slice(1),
+      title: item.label,
+      section: "Seção",
+      text: item.label,
+      href: item.href,
+      suggest: true,
+    })),
   ...stats.map((stat) => ({
     id: `stat-${stat.value}`,
     title: stat.value,

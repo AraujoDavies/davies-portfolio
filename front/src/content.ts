@@ -235,7 +235,7 @@ export const about = {
 };
 
 export const nav = [
-  { href: "#topo", label: "Início" },
+  { href: "#", label: "Início" },
   { href: "#projetos", label: "Projetos" },
   { href: "#experiencia", label: "Experiência" },
   { href: "#stack", label: "Stack" },
