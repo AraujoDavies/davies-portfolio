@@ -1,6 +1,9 @@
 # Private / working notes (repo is public)
 /plano-portfolio-davies.md
 /textos-portfolio-davies.md
+/SETUP-DEPLOY.md
+/rule.json
+/police.json
 
 # Dependencies & build
 node_modules/

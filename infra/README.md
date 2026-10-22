@@ -52,9 +52,7 @@ Configure no repositório GitHub:
 | Variable | `AWS_S3_BUCKET` | output `site_bucket_name` |
 | Variable | `CLOUDFRONT_DISTRIBUTION_ID` | output `cloudfront_distribution_id` |
 
-Environment do workflow: `production`.
-
-A role precisa confiar no OIDC do GitHub (`token.actions.githubusercontent.com`) e permitir no mínimo:
+A role precisa confiar no OIDC do GitHub com `sub` em `repo:AraujoDavies/davies-portfolio:ref:refs/heads/main` e permitir no mínimo:
 
 - `s3:ListBucket` no bucket do site
 - `s3:PutObject`, `s3:DeleteObject`, `s3:GetObject` nos objetos do bucket
