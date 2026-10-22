@@ -115,10 +115,6 @@ function ProjectCase({ project }: { project: Project }) {
         </div>
       </header>
 
-      {project.videoLabel && project.videoUrl ? (
-        <ProjectVideo label={project.videoLabel} url={project.videoUrl} />
-      ) : null}
-
       {project.comingSoon ? (
         <div className="project__diagram" aria-hidden="true">
           <div className="project__diagram-inner">
@@ -176,6 +172,10 @@ function ProjectCase({ project }: { project: Project }) {
           {project.note ? <p className="project__note">{project.note}</p> : null}
         </div>
       </footer>
+
+      {project.videoLabel && project.videoUrl ? (
+        <ProjectVideo label={project.videoLabel} url={project.videoUrl} />
+      ) : null}
     </article>
   );
 }
