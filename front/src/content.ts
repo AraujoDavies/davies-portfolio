@@ -155,7 +155,7 @@ export const experience = [
     company: "ICS/AmDigital",
     period: "2023 – 2025",
     bullets: [
-      "Fiz o deploy de uma casa de apostas do zero, em arquitetura ECR + ECS com auto scaling e RDS. Os retornos da provedora de cassino chegavam por um webhook em API Gateway + Lambda.",
+      "Subi a infra na AWS de uma plataforma de apostas (ECR + ECS com auto scaling e RDS) e criei um webhook em API Gateway + Lambda que atualiza os spins de jogos de cassino e slot.",
       "Desenvolvi um ETL que integrou diversos CRMs e unificou uma base com mais de 10 milhões de usuários: conversão de arquivos Parquet, análise da estrutura com Pandas, modelagem de tabelas no MySQL com índices nas colunas principais, padronização de contatos e tipagem, e carga em lote.",
     ],
   },
@@ -230,7 +230,7 @@ export const certifications = [
 
 export const about = {
   paragraphs: [
-    "Comecei no suporte de TI em 2020, resolvendo problemas de usuários todos os dias. Em 2023 passei para desenvolvimento backend, onde fiz o deploy de uma casa de apostas do zero e unifiquei uma base de mais de 10 milhões de usuários. Hoje crio e opero meus próprios produtos, o Izitips e o CNDManager, e presto consultoria AWS.",
+    "Comecei no suporte de TI em 2020, resolvendo problemas de usuários todos os dias. Em 2023 passei para desenvolvimento backend: subi a infra na AWS de uma plataforma de apostas (ECR/ECS, auto scaling, RDS) e criei um webhook (API Gateway + Lambda) que atualiza os spins de jogos de cassino e slot. Também unifiquei uma base com mais de 10 milhões de usuários. Hoje crio e opero meus próprios produtos, o Izitips e o CNDManager, e presto consultoria AWS.",
     "Gosto de transformar tarefas manuais e repetitivas em sistemas que funcionam sozinhos, cuidando de custo, estabilidade e de quem vai usar. Estou em busca da próxima oportunidade como Backend Engineer com Python e AWS.",
   ],
 };
