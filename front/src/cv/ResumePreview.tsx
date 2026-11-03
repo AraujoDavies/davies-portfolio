@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   parseResumeVariantFromPath,
   resumePathForVariant,
@@ -7,6 +7,8 @@ import {
 } from "./resume";
 import { ResumeDocument } from "./ResumeDocument";
 import "./resume.css";
+
+const PDF_FILENAME = "davies-cv";
 
 const variantLabels: Record<ResumeVariant, string> = {
   "product-ai": "A — Product / AI",
@@ -19,12 +21,21 @@ export function ResumePreview() {
   );
   const data = resumeVariants[variant];
 
+  useEffect(() => {
+    const previous = document.title;
+    document.title = PDF_FILENAME;
+    return () => {
+      document.title = previous;
+    };
+  }, []);
+
   const setVariant = useCallback((next: ResumeVariant) => {
     window.history.replaceState(null, "", resumePathForVariant(next));
     setVariantState(next);
   }, []);
 
   const print = useCallback(() => {
+    document.title = PDF_FILENAME;
     window.print();
   }, []);
 
