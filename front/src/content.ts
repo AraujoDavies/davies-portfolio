@@ -14,9 +14,9 @@ export const links = {
 
 export const hero = {
   name: "Davies Araujo",
-  title: "Backend Engineer | Python & AWS",
+  title: "Product Engineer · Backend | Python · Django · React · AI · AWS",
   pitch:
-    "Construo sistemas de automação e dados que rodam em produção, de SaaS próprio a ETL com milhões de registros. Entendo o sistema de ponta a ponta, do código ao deploy.",
+    "Construo produtos SaaS e sistemas de automação e dados em produção — do desenho ao deploy. Atuo na linha de Product Engineering com IA aplicada e também como engenheiro Django/React e AWS, do backend às integrações e à operação.",
   initials: "DS",
 };
 

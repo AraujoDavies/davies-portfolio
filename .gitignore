@@ -5,6 +5,7 @@
 /SETUP-DEPLOY.md
 /rule.json
 /police.json
+/product-ia.md
 
 # Dependencies & build
 node_modules/
